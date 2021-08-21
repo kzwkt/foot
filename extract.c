@@ -1,12 +1,13 @@
 #include "extract.h"
-#include <stdlib.h>
+#include <string.h>
 
 #define LOG_MODULE "extract"
 #define LOG_ENABLE_DBG 1
 #include "log.h"
+#include "char32.h"
 
 struct extraction_context {
-    wchar_t *buf;
+    char32_t *buf;
     size_t size;
     size_t idx;
     size_t tab_spaces_left;
@@ -40,7 +41,7 @@ ensure_size(struct extraction_context *ctx, size_t additional_chars)
 {
     while (ctx->size < ctx->idx + additional_chars) {
         size_t new_size = ctx->size == 0 ? 512 : ctx->size * 2;
-        wchar_t *new_buf = realloc(ctx->buf, new_size * sizeof(wchar_t));
+        char32_t *new_buf = realloc(ctx->buf, new_size * sizeof(new_buf[0]));
 
         if (new_buf == NULL)
             return false;
@@ -54,7 +55,7 @@ ensure_size(struct extraction_context *ctx, size_t additional_chars)
 }
 
 bool
-extract_finish_wide(struct extraction_context *ctx, wchar_t **text, size_t *len)
+extract_finish_wide(struct extraction_context *ctx, char32_t **text, size_t *len)
 {
     if (text == NULL)
         return false;
@@ -115,29 +116,20 @@ extract_finish(struct extraction_context *ctx, char **text, size_t *len)
     if (len != NULL)
         *len = 0;
 
-    wchar_t *wtext;
+    char32_t *wtext;
     if (!extract_finish_wide(ctx, &wtext, NULL))
         return false;
 
     bool ret = false;
 
-    size_t _len = wcstombs(NULL, wtext, 0);
-    if (_len == (size_t)-1) {
-        LOG_ERRNO("failed to convert selection to UTF-8");
+    *text = ac32tombs(wtext);
+    if (*text == NULL) {
+        LOG_ERR("failed to convert selection to UTF-8");
         goto out;
     }
-
-    *text = malloc(_len + 1);
-    if (unlikely(text == NULL)) {
-        LOG_ERRNO("malloc() failed");
-        goto out;
-    }
-
-    wcstombs(*text, wtext, _len + 1);
 
     if (len != NULL)
-        *len = _len;
-
+        *len = strlen(*text);
     ret = true;
 
 out:
