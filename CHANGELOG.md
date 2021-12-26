@@ -57,6 +57,8 @@
   - `DECSCUSR` - _Set Cursor Style_
 * Support for searching for the last searched-for string in scrollback
   search (search for next/prev match with an empty search string).
+* Rectangular edit functions: `DECCARA`, `DECRARA`, `DECCRA`, `DECFRA`
+  and `DECERA`.
 
 
 ### Changed
