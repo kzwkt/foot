@@ -59,6 +59,7 @@
   search (search for next/prev match with an empty search string).
 * Rectangular edit functions: `DECCARA`, `DECRARA`, `DECCRA`, `DECFRA`
   and `DECERA`.
+* `Rect` capability to terminfo.
 
 
 ### Changed
