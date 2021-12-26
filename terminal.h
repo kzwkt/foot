@@ -734,6 +734,7 @@ void term_cursor_up(struct terminal *term, int count);
 void term_cursor_down(struct terminal *term, int count);
 void term_cursor_blink_update(struct terminal *term);
 
+void term_put_char(struct terminal *term, int r, int c, wchar_t wc);
 void term_print(struct terminal *term, wchar_t wc, int width);
 
 void term_scroll(struct terminal *term, int rows);
