@@ -3311,7 +3311,7 @@ term_print(struct terminal *term, wchar_t wc, int width)
         grid_row_uri_range_erase(row, col, col + width - 1);
 
     /* Advance cursor the 'additional' columns while dirty:ing the cells */
-    for (int i = 1; i < width && col < term->cols - 1; i++) {
+    for (int i = 1; i < width && col < term->cols; i++) {
         col++;
         print_spacer(term, col, width - i);
     }
